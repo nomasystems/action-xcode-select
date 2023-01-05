@@ -2,10 +2,10 @@ name: Build task
 on:
   push:
     branches:
-      - master
+      - release/**
   pull_request:
-  schedule:
-    - cron: 0 0 * * *
+    branches:
+      - master
 
 jobs:
   Build:
