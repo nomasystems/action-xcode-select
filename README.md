@@ -1,7 +1,7 @@
 # setup-xcode
 This action is intended to switch between pre-installed versions of Xcode for macOS images in GitHub Actions.
 
-The list of all available versions can be found in [runner-images](https://github.com/actions/runner-images/blob/master/images/macos/macos-13-Readme.md#xcode) repository.
+The list of all available versions can be found in [runner-images](https://github.com/actions/runner-images/blob/main/images/macos/macos-14-arm64-Readme.md#xcode) repository.
 
 # Available parameters
 | Argument                | Description              | Format    |
@@ -19,13 +19,22 @@ The list of all available versions can be found in [runner-images](https://githu
 
 # Usage
 
+Set the Xcode version based on the contents of the `.xcode-version` file:
+```
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+    - uses: nomasystems/action-xcode-select@v0.2
+```
+
 Set the latest stable Xcode version:
 ```
 jobs:
   build:
     runs-on: macos-latest
     steps:
-    - uses: maxim-lobanov/setup-xcode@v1
+    - uses: nomasystems/action-xcode-select@v0.2
       with:
         xcode-version: latest-stable
 ```
@@ -36,7 +45,7 @@ jobs:
   build:
     runs-on: macos-latest
     steps:
-    - uses: maxim-lobanov/setup-xcode@v1
+    - uses: nomasystems/action-xcode-select@v0.2
       with:
         xcode-version: latest
 ```
@@ -47,7 +56,7 @@ jobs:
   build:
     runs-on: macos-15
     steps:
-    - uses: maxim-lobanov/setup-xcode@v1
+    - uses: nomasystems/action-xcode-select@v0.2
       with:
         xcode-version: '16.4'
 ```
@@ -58,9 +67,18 @@ jobs:
   build:
     runs-on: macos-26
     steps:
-    - uses: maxim-lobanov/setup-xcode@v1
+    - uses: nomasystems/action-xcode-select@v0.2
       with:
         xcode-version: '26.3'
 ```
+
+# How it works
+
+1. Enumerates apps named `Xcode.*.app` in the `/Applications` directory
+    * The version information for each app version is parsed from its plist files
+2. The requested semantic version is matched against the available app versions
+3. Exports the environment variable `DEVELOPER_DIR` (see `man xcode-select`) with
+the path to the matched Xcode app
+
 # License
 The scripts and documentation in this project are released under the [MIT License](LICENSE)
